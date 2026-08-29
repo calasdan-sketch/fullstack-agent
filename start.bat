@@ -47,7 +47,14 @@ if exist "backtalk\" (
   cd backtalk
   rem Self-repair: reconcile the voice line's packages before launch
   rem (fast when current; heals a half-installed environment).
-  uv sync -q --inexact >nul 2>nul
+  rem
+  rem Its output is deliberately NOT hidden. This used to run quiet with
+  rem everything sent to nul, so a first run downloaded a few hundred
+  rem megabytes behind a completely blank screen. There is no way to tell
+  rem that apart from frozen, and people reasonably assumed the worst.
+  echo   voice: checking packages. The FIRST run downloads a few hundred MB
+  echo          and can take several minutes. It is not stuck.
+  uv sync --inexact
   uv run python -m backtalk.main
   rem A clean goodbye exits 0 and the window may close. An error exits
   rem nonzero, and the window HOLDS so the message can be read.
