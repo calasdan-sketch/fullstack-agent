@@ -44,7 +44,15 @@ for %%r in (fullstack-agent ai-memory-vault backtalk barehands ai-visualizer) do
   if exist "%%r\.git\" call :one "%%r"
 )
 echo update complete.
-if not exist "%USERPROFILE%\Desktop\Update *" echo Tip: want a desktop Update icon that does this on a double-click? Open your agent and ask for one.
+rem The real Desktop, not the classic path. On Windows 11 OneDrive
+rem commonly REDIRECTS the Desktop to %USERPROFILE%\OneDrive\Desktop, so a
+rem hardcoded check missed the icon and offered to make one for people who
+rem had just double-clicked it. GetFolderPath follows the redirection; the
+rem classic path is the fallback if the query fails for any reason.
+set "DESKTOP_DIR="
+for /f "delims=" %%d in ('powershell -NoProfile -Command "[Environment]::GetFolderPath('Desktop')" 2^>nul') do set "DESKTOP_DIR=%%d"
+if not defined DESKTOP_DIR set "DESKTOP_DIR=%USERPROFILE%\Desktop"
+if not exist "%DESKTOP_DIR%\Update *" echo Tip: want a desktop Update icon that does this on a double-click? Open your agent and ask for one.
 exit /b 0
 
 :one
